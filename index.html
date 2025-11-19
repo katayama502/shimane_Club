@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>みんなの部活応援隊 - 島根の部活マッチング</title>
+    <style>
+        /* --- CSS Variables & Reset --- */
+        :root {
+            --primary-color: #0095D9; /* 島根の空や海をイメージしたブルー */
+            --primary-hover: #007AB3;
+            --accent-color: #8FC31F; /* 自然豊かなグリーンのアクセント */
+            --text-color: #333;
+            --bg-color: #F5F9FC;
+            --white: #ffffff;
+            --error: #e74c3c;
+            --gray: #f0f0f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* --- Header --- */
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo span {
+            color: var(--accent-color);
+            margin-left: 5px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: bold;
+            font-size: 0.9rem;
+            padding: 0.5rem 0.8rem;
+            border-radius: 4px;
+            transition: background 0.3s;
+            cursor: pointer;
+        }
+
+        nav a:hover {
+            background-color: var(--gray);
+            color: var(--primary-color);
+        }
+
+        nav a.btn-nav-login {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        nav a.btn-nav-login:hover {
+            background-color: var(--primary-hover);
+        }
+
+        /* --- Main Content & Sections --- */
+        main {
+            flex: 1;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            width: 100%;
+        }
+
+        section {
+            display: none; /* 初期状態は非表示 */
+            animation: fadeIn 0.5s ease;
+        }
+
+        section.active {
+            display: block; /* activeクラスがついたセクションのみ表示 */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 3px solid var(--accent-color);
+            display: inline-block;
+            padding-bottom: 0.3rem;
+        }
+
+        /* --- Screen 1: Home --- */
+        .hero {
+            text-align: center;
+            padding: 3rem 1rem;
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .btn-primary:hover { background-color: var(--primary-hover); }
+
+        .btn-secondary {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        .btn-secondary:hover { opacity: 0.9; }
+
+        .btn-outline {
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            background: transparent;
+        }
+        .btn-outline:hover { background-color: var(--primary-color); color: white; }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        /* --- Forms (Login, Register) --- */
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        .error-msg {
+            color: var(--error);
+            margin-bottom: 1rem;
+            font-weight: bold;
+            display: none;
+        }
+
+        /* --- Club List --- */
+        .club-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .club-card {
+            background: var(--white);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s;
+        }
+
+        .club-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .club-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .club-body {
+            padding: 1.5rem;
+            flex: 1;
+        }
+
+        .club-meta {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .tag {
+            background: #eee;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .club-needs {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 4px solid var(--accent-color);
+            margin-bottom: 1rem;
+        }
+
+        .match-status {
+            margin-top: auto;
+            padding: 1rem;
+            border-top: 1px solid #eee;
+            text-align: center;
+        }
+
+        /* --- Footer --- */
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: auto;
+        }
+
+        /* Helper Classes */
+        .hidden { display: none !important; }
+        .text-center { text-align: center; }
+        
+        /* Responsive Mobile Nav adjustment */
+        @media (max-width: 768px) {
+            .header-inner {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            nav ul {
+                justify-content: center;
+            }
+            .hero h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-inner">
+            <a href="#" class="logo" onclick="app.navigate('home')">
+                みんなの部活応援隊<span>Shimane</span>
+            </a>
+            <nav>
+                <ul id="nav-menu">
+                    <li><a onclick="app.navigate('home')">ホーム</a></li>
+                    <li><a onclick="app.navigate('list')">クラブ一覧</a></li>
+                    <li class="guest-only"><a onclick="app.navigate('register-club')">クラブ登録</a></li>
+                    <li class="guest-only"><a onclick="app.navigate('register-company')">企業登録</a></li>
+                    <li class="guest-only"><a class="btn-nav-login" onclick="app.navigate('login')">ログイン</a></li>
+                    <li class="user-only hidden"><span id="user-name" style="margin-right:10px; font-size:0.8rem;"></span></li>
+                    <li class="user-only hidden"><a class="btn-nav-login" onclick="app.logout()">ログアウト</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section id="home" class="active">
+            <div class="hero">
+                <h1>島根の部活 × 地元企業</h1>
+                <p>「あきらめたら、そこで試合終了」<br>
+                みんなの部活応援隊は、島根県のクラブチームと<br>応援したい企業をつなぐマッチングプラットフォームです。</p>
+                
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" onclick="app.navigate('register-club')">クラブとして登録</button>
+                    <button class="btn btn-secondary" onclick="app.navigate('register-company')">企業として登録</button>
+                    <button class="btn btn-outline" onclick="app.navigate('list')">クラブチーム一覧を見る</button>
+                </div>
+            </div>
+
+            <div class="features">
+                <div class="feature-card">
+                    <h3>⚽️ クラブチーム</h3>
+                    <p>活動資金や備品、遠征費などの支援を企業にアピールできます。</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🏢 協賛企業</h3>
+                    <p>地域の子どもたちを応援し、社会貢献とPRにつなげられます。</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🤝 マッチング</h3>
+                    <p>ウェブ上で簡単に申請・マッチングが可能。地域を盛り上げましょう！</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="login">
+            <div class="form-container">
+                <h2 class="text-center">ログイン</h2>
+                <p class="text-center" style="margin-bottom: 1rem; font-size: 0.9rem;">
+                    デモ用アカウント:<br>
+                    Email: <b>test@example.com</b> / Pass: <b>password123</b>
+                </p>
+                <div id="login-error" class="error-msg">メールアドレスまたはパスワードが違います</div>
+                
+                <form onsubmit="app.handleLogin(event)">
+                    <div class="form-group">
+                        <label>メールアドレス</label>
+                        <input type="email" id="login-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>パスワード</label>
+                        <input type="password" id="login-pass" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%">ログイン</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="register-club">
+            <div class="form-container">
+                <h2 class="text-center">クラブチーム登録</h2>
+                <p class="text-center" style="margin-bottom: 1rem;">あなたの部活の魅力を発信しましょう！</p>
+                
+                <form onsubmit="app.handleClubRegister(event)">
+                    <div class="form-group">
+                        <label>クラブ名 <span style="color:red">*</span></label>
+                        <input type="text" id="club-name" placeholder="例：益田高校サッカー部" required>
+                    </div>
+                    <div class="form-group">
+                        <label>連絡用メールアドレス <span style="color:red">*</span></label>
+                        <input type="email" id="club-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>活動エリア</label>
+                        <select id="club-area">
+                            <option value="松江市">松江市</option>
+                            <option value="出雲市">出雲市</option>
+                            <option value="浜田市">浜田市</option>
+                            <option value="益田市">益田市</option>
+                            <option value="その他">その他</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>種目・ジャンル</label>
+                        <input type="text" id="club-category" placeholder="例：サッカー、吹奏楽、eスポーツ" required>
+                    </div>
+                    <div class="form-group">
+                        <label>必要な支援内容・アピール</label>
+                        <textarea id="club-needs" placeholder="遠征費の支援をお願いしたいです。地域のボランティアにも参加します！" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%">クラブ情報を登録する</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="register-company">
+            <div class="form-container">
+                <h2 class="text-center">協賛企業登録</h2>
+                <p class="text-center" style="margin-bottom: 1rem;">島根の未来を担う子どもたちを応援しませんか？</p>
+                
+                <form onsubmit="app.handleCompanyRegister(event)">
+                    <div class="form-group">
+                        <label>企業名 <span style="color:red">*</span></label>
+                        <input type="text" required placeholder="例：株式会社島根ITソリューションズ">
+                    </div>
+                    <div class="form-group">
+                        <label>担当者名</label>
+                        <input type="text" required>
+                    </div>
+                    <div class="form-group">
+                        <label>メールアドレス <span style="color:red">*</span></label>
+                        <input type="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>応援メッセージ</label>
+                        <textarea placeholder="地域貢献活動の一環として支援を検討しています。"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-secondary" style="width: 100%">企業情報を登録する</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="list">
+            <h2 class="text-center">登録クラブチーム一覧</h2>
+            <p class="text-center" style="margin-bottom: 2rem;">
+                気になるクラブを見つけて「マッチング申請」を送りましょう。<br>
+                <span style="font-size: 0.9rem; color: #666;">※マッチング申請にはログインが必要です。</span>
+            </p>
+            
+            <div id="club-list-container" class="club-grid">
+                </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 みんなの部活応援隊 Shimane Project.</p>
+    </footer>
+
+    <script>
+        /**
+         * アプリケーションロジック
+         */
+        const app = {
+            // 状態管理
+            state: {
+                isLoggedIn: false,
+                currentUser: null,
+                clubs: [
+                    {
+                        id: 1,
+                        name: '益田高校サッカー部',
+                        email: 'soccer@example.com',
+                        area: '益田市',
+                        category: 'サッカー',
+                        needs: '県大会優勝を目指して練習しています！遠征費と練習用ビブスの協賛を希望しています。'
+                    },
+                    {
+                        id: 2,
+                        name: '松江北吹奏楽団',
+                        email: 'brass@example.com',
+                        area: '松江市',
+                        category: '吹奏楽',
+                        needs: '定期演奏会のパンフレット広告スポンサーを募集しています。'
+                    },
+                    {
+                        id: 3,
+                        name: '出雲ロボコン愛好会',
+                        email: 'robot@example.com',
+                        area: '出雲市',
+                        category: '科学・技術',
+                        needs: 'ロボット制作のための電子部品の提供や、技術指導をしてくれる企業様を探しています。'
+                    }
+                ]
+            },
+
+            /**
+             * 初期化
+             */
+            init: function() {
+                this.renderNav();
+                // 初期表示はHome
+                this.navigate('home');
+            },
+
+            /**
+             * 画面切り替え (SPA風)
+             */
+            navigate: function(pageId) {
+                // 全セクションを非表示
+                document.querySelectorAll('section').forEach(sec => {
+                    sec.classList.remove('active');
+                });
+                
+                // 指定セクションを表示
+                const target = document.getElementById(pageId);
+                if (target) {
+                    target.classList.add('active');
+                }
+
+                // 一覧ページが開かれたらリストを再描画
+                if (pageId === 'list') {
+                    this.renderClubList();
+                }
+                
+                // ページトップへ
+                window.scrollTo(0, 0);
+            },
+
+            /**
+             * ログイン処理
+             */
+            handleLogin: function(e) {
+                e.preventDefault();
+                const email = document.getElementById('login-email').value;
+                const pass = document.getElementById('login-pass').value;
+                const errorMsg = document.getElementById('login-error');
+
+                // 簡易認証
+                if (email === 'test@example.com' && pass === 'password123') {
+                    this.state.isLoggedIn = true;
+                    this.state.currentUser = '田中 太郎'; // ダミーユーザー名
+                    errorMsg.style.display = 'none';
+                    
+                    // フォームクリア
+                    e.target.reset();
+
+                    this.renderNav();
+                    alert('ログインしました！');
+                    this.navigate('list'); // ログイン後は一覧へ
+                } else {
+                    errorMsg.style.display = 'block';
+                }
+            },
+
+            /**
+             * ログアウト処理
+             */
+            logout: function() {
+                this.state.isLoggedIn = false;
+                this.state.currentUser = null;
+                this.renderNav();
+                alert('ログアウトしました。');
+                this.navigate('home');
+            },
+
+            /**
+             * ナビゲーションの表示切り替え
+             */
+            renderNav: function() {
+                const guestLinks = document.querySelectorAll('.guest-only');
+                const userLinks = document.querySelectorAll('.user-only');
+                const userNameSpan = document.getElementById('user-name');
+
+                if (this.state.isLoggedIn) {
+                    guestLinks.forEach(el => el.classList.add('hidden'));
+                    userLinks.forEach(el => el.classList.remove('hidden'));
+                    userNameSpan.textContent = `${this.state.currentUser} さんとしてログイン中`;
+                } else {
+                    guestLinks.forEach(el => el.classList.remove('hidden'));
+                    userLinks.forEach(el => el.classList.add('hidden'));
+                    userNameSpan.textContent = '';
+                }
+            },
+
+            /**
+             * クラブ登録処理
+             */
+            handleClubRegister: function(e) {
+                e.preventDefault();
+                
+                const newClub = {
+                    id: this.state.clubs.length + 1,
+                    name: document.getElementById('club-name').value,
+                    email: document.getElementById('club-email').value,
+                    area: document.getElementById('club-area').value,
+                    category: document.getElementById('club-category').value,
+                    needs: document.getElementById('club-needs').value
+                };
+
+                this.state.clubs.push(newClub);
+                
+                alert('クラブ情報を登録しました！一覧画面に追加されます。');
+                e.target.reset();
+                this.navigate('list');
+            },
+
+            /**
+             * 企業登録処理 (ダミー)
+             */
+            handleCompanyRegister: function(e) {
+                e.preventDefault();
+                alert('企業登録を受け付けました。（デモのためデータは保存されませんが、登録完了とみなします）');
+                e.target.reset();
+                this.navigate('home');
+            },
+
+            /**
+             * マッチング申請 (アラートのみ)
+             */
+            applyMatch: function(clubName) {
+                if (!this.state.isLoggedIn) {
+                    alert('マッチング申請をするにはログインしてください。');
+                    this.navigate('login');
+                    return;
+                }
+                alert(`「${clubName}」へマッチング申請を送りました！\n企業側の連絡をお待ちください。`);
+            },
+
+            /**
+             * クラブ一覧の描画
+             */
+            renderClubList: function() {
+                const container = document.getElementById('club-list-container');
+                container.innerHTML = ''; // リセット
+
+                this.state.clubs.forEach(club => {
+                    // カードHTMLの生成
+                    const card = document.createElement('div');
+                    card.className = 'club-card';
+                    
+                    // ボタンの出しわけ
+                    let buttonHtml = '';
+                    if (this.state.isLoggedIn) {
+                        buttonHtml = `<button class="btn btn-primary" style="width:100%" onclick="app.applyMatch('${club.name}')">マッチング申請する</button>`;
+                    } else {
+                        buttonHtml = `<button class="btn btn-outline" style="width:100%" disabled>ログインして申請</button>`;
+                    }
+
+                    card.innerHTML = `
+                        <div class="club-header">${club.name}</div>
+                        <div class="club-body">
+                            <div class="club-meta">
+                                <span class="tag">📍 ${club.area}</span>
+                                <span class="tag">🏷 ${club.category}</span>
+                            </div>
+                            <div class="club-needs">
+                                <strong>求む支援：</strong><br>
+                                ${club.needs}
+                            </div>
+                        </div>
+                        <div class="match-status">
+                            ${buttonHtml}
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            }
+        };
+
+        // アプリ起動
+        document.addEventListener('DOMContentLoaded', () => {
+            app.init();
+        });
+    </script>
+</body>
+</html>
